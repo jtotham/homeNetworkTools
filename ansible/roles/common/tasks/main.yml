@@ -1,9 +1,4 @@
 ---
-- name: validation
-  assert:
-    that:
-      - dns_nameservers|length >= 2
-
 - name: update apt and upgrade packages
   apt: >-
     upgrade=yes
@@ -116,13 +111,13 @@
     - ubuntu
     - ubuntu_sudo
 
-- name: set sudo without password on wirehive user
+- name: set sudo without password on jon user
   lineinfile: >
     dest=/etc/sudoers.d/nopassword
-    regexp=^wirehive 
+    regexp=^jon
     line='jon ALL=(ALL) NOPASSWD: ALL' 
     create=yes 
-    mode=0440 
+    mode=0440
     owner=root 
     group=root
   tags:

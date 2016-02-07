@@ -1,9 +1,15 @@
 ---
 - hosts: home-servers
+  become: yes
+  become_method: sudo
   roles:
      - common
-       #       linux_harden
-       #       newrelic
-       #       ntp
-       #       vmwaretools
+     - linux_harden
+     - newrelic
+     - ntp
+     - vmwaretools
+
+- vars_files:
+    - private.yml
+
 

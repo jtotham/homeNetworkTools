@@ -136,10 +136,6 @@ describe file('/etc/ssh/sshd_config') do
   its(:content) { should match /PermitRootLogin no/ }
 end
 
-describe file('/etc/cron.d/oomProtect') do
-  its(:content) { should match "/opt/wirehive/oomProtection.sh" }
-end
-
 describe file('/etc/default/grub') do
   its(:content) { should match "1024x768" }
 end
