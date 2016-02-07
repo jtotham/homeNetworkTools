@@ -1,0 +1,17 @@
+[home-servers]
+console.jonsbox.net
+omv.jonsbox.net
+media.jonsbox.net
+plex.jonsbox.net
+
+[home-pi]
+octopi.jonsbox.net
+
+[home:children]
+home-servers
+home-pi
+
+[wirehive-servers]
+snake.jonsbox.net
+
+[aws-servers]
