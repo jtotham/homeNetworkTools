@@ -1,0 +1,4 @@
+---
+newrelic_agent_package_name: newrelic-sysmond
+newrelic_agent_service_name: newrelic-sysmond
+newrelic_agent_config_path: /etc/newrelic/nrsysmond.cfg

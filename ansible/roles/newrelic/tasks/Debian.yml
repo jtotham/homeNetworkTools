@@ -1,0 +1,42 @@
+---
+- name: ensure New Relic repository GPG key is added
+  apt_key: >
+    id={{ newrelic_gpg_key_id }}
+    url={{ newrelic_gpg_key_url }} 
+    state=present
+  tags: newrelic
+
+- name: ensure New Relic repository present
+  apt_repository: >
+    repo='deb http://apt.newrelic.com/debian/ newrelic non-free'
+  tags: newrelic
+
+- name: removing source line for New Relic repository (Ubuntu bug)
+  lineinfile: >
+    dest=/etc/apt/sources.list
+    regexp="^deb-src http://apt.newrelic"
+    state=absent
+  tags: newrelic
+
+- name: install New Relic system agent
+  apt: >
+    pkg={{ newrelic_agent_package_name }} 
+    state=latest
+  tags: newrelic
+
+- name: set New Relic system agent key
+  lineinfile: >
+    dest={{ newrelic_agent_config_path }}
+    regexp=^license_key
+    line="license_key={{ newrelic_license }}" 
+    state=present
+  tags: newrelic
+  notify:
+    - restart newrelic-sysmond
+
+- name: start new relic agent
+  service: >-
+    name=newrelic-sysmond
+    state=started
+    enabled=yes
+  tags: newrelic

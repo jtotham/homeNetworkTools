@@ -1,0 +1,48 @@
+---
+
+- name: set dns servers
+  lineinfile: >
+    dest=/etc/network/interfaces
+    state=present
+    insertbefore='up route add default'
+    regexp='^dns-nameservers'
+    line="dns-nameservers {{ dns_nameservers|join(' ') }}"
+  notify: restart networking
+  tags: 
+    - ubuntu
+    - ubuntu_networking
+
+- name: configure eth0 ipv6 - iface
+  blockinfile:
+    dest: /etc/network/interfaces
+    insertafter: 'auto eth0'
+    block: |
+      iface eth0 inet6 static
+          address {{ ipv6_address }}
+          netmask {{ ipv6_netmask }}
+          gateway {{ ipv6_gateway }}
+  when: ipv6_address is defined
+  notify: restart networking
+  tags:
+    - ubuntu
+    - ubuntu_networking
+
+- name: set server gai preference to ipv4 1/2
+  lineinfile: >
+    dest=/etc/gai.conf
+    regexp="^#precedence ::ffff:0:0/96  100$" 
+    state=absent
+  tags: 
+    - ubuntu
+    - ubuntu_networking
+
+- name: set server gai preference to ipv4 2/2
+  lineinfile: >
+    dest=/etc/gai.conf
+    regexp="^precedence ::ffff:0:0/96  100$"
+    line="precedence ::ffff:0:0/96  100"
+    state=present
+  notify: restart networking
+  tags: 
+    - ubuntu
+    - ubuntu_networking

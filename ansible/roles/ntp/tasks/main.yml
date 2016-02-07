@@ -1,0 +1,34 @@
+---
+- name: install ntp
+  apt: >-
+    name=ntp
+    state=installed
+  tags:
+    - ntp
+
+- name: configure ntp
+  template: >
+    src=ntp.conf.j2
+    dest=/etc/ntp.conf
+    mode=0644
+    owner=root
+    group=root
+  notify:
+    - restart ntp
+  tags:
+    - ntp
+
+- name: enable ntp on boot
+  service: >
+    name=ntp
+    state=started
+    enabled=yes
+  tags:
+    - ntp
+
+- name: test ntp
+  command:
+    ntpq -np
+  changed_when: false
+  tags:
+    - ntp

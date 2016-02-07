@@ -1,0 +1,11 @@
+---
+linux_harden_nologin_users:
+  - daemon
+  - bin
+  - lp
+  - sys
+  - man
+  - mail
+  - backup
+  - nobody
+  - libuuid

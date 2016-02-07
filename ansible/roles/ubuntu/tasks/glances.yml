@@ -1,0 +1,27 @@
+---
+- name: install glances
+  apt: >
+    name=glances
+    state=installed
+  tags:
+    - ubuntu
+    - ubuntu_glances
+
+- name: configure glances
+  template: >-
+    src=etc_default_glances.j2
+    dest=/etc/default/glances
+  notify:
+    - restart glances
+  tags:
+    - ubuntu
+    - ubuntu_glances
+
+- name: enable and start glances
+  service: >-
+    name=glances
+    enabled=yes
+    state=started
+  tags:
+    - ubuntu
+    - ubuntu_glances

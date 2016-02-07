@@ -1,0 +1,10 @@
+rocommunity {{ snmp_community }}
+
+syslocation  "Wirehive"
+syscontact  "Wirehive Support <{{ wirehive_support_email }}>"
+sysServices    72
+
+#  Disk Monitoring
+disk       /     10000
+disk       /var  5%
+includeAllDisks  10%

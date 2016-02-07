@@ -1,0 +1,20 @@
+---
+linux_harden_remove_users:
+  - games
+  - gnats
+  - irc
+  - list
+  - news
+  - proxy
+  - uucp
+  - src
+linux_harden_remove_groups:
+  - games
+  - gnats
+  - irc
+  - list
+  - news
+  - proxy
+  - uucp
+  - src
+

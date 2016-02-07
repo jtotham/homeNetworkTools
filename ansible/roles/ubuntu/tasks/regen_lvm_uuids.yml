@@ -1,0 +1,25 @@
+---
+- name: regenerate LVM UUIDs
+  script: regen_lvm_uuids.sh
+  changed_when: false
+  sudo: true
+  register: regen_lvm_uuids
+  tags:
+    - ubuntu
+
+- name: reboot to apply regenerate LVM UUIDS
+  shell: sleep 2 && shutdown -r now
+  async: 1
+  poll: 0
+  ignore_errors: true
+  when: regen_lvm_uuids
+  tags:
+    - ubuntu
+
+- name: wait for server to boot
+  # do not make the line below multi-line 
+  local_action: wait_for host={{ ansible_default_ipv4.address }} port=22 state=started delay=10
+  sudo: false
+  when: regen_lvm_uuids
+  tags:
+    - ubuntu

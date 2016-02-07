@@ -1,0 +1,3 @@
+---
+- name: restart newrelic-sysmond
+  service: name={{ newrelic_agent_service_name}} state=restarted

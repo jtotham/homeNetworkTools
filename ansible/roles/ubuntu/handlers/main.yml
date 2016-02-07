@@ -1,0 +1,37 @@
+---
+- name: restart glances
+  service: name=glances state=restarted
+
+- name: restart snmpd
+  service: name=snmpd state=restarted
+
+- name: restart postfix
+  service: name=postfix state=restarted
+
+- name: restart newrelic-sysmond
+  service: name=newrelic-sysmond state=restarted
+  ignore_errors: yes
+
+- name: restart ntp
+  service: name=ntp state=restarted
+
+- name: restart fail2ban
+  service: name=fail2ban state=restarted
+
+- name: restart ssh
+  service: name=ssh state=restarted
+
+- name: reload ssh
+  service: name=ssh state=reloaded
+
+- name: restart atop
+  service: name=atop state=restarted
+
+- name: stop whoopsie
+  service: name=whoopsie state=stopped
+
+- name: restart networking
+  shell: ifdown -a ; ifup -a
+
+- name: rebuild grub
+  command: update-grub

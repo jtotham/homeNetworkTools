@@ -1,0 +1,33 @@
+---
+- name: set atop interval to 60 seconds (trusty and newer)
+  lineinfile: >
+    dest=/etc/default/atop
+    regexp='^INTERVAL=.*'
+    line='INTERVAL=60'
+  when: ansible_distribution_version|version_compare('14.04', '>=')
+  notify:
+    - restart atop
+  tags:
+    - ubuntu
+    - ubuntu_atop
+
+- name: set atop interval to 60 seconds (older than trusty)
+  lineinfile: >
+    dest=/etc/init.d/atop
+    regexp='^DARGS='
+    line='DARGS="-a -w /var/log/atop.log 60"'
+  when: ansible_distribution_version|version_compare('14.04', '<')
+  notify:
+    - restart atop
+  tags:
+    - ubuntu
+    - ubuntu_atop
+
+- name: set atop enabled and started
+  service: >-
+    name=atop
+    enabled=true
+    state=started
+  tags:
+    - ubuntu
+    - ubuntu_atop

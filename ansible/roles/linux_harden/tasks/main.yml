@@ -1,0 +1,38 @@
+---
+- name: include os-specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - ../vars/{{ ansible_distribution }}.yml
+    - ../vars/{{ ansible_os_family }}.yml
+
+- name: remove unnecessary users
+  user: >
+    name={{ item }}
+    state=absent
+  with_items: "{{ linux_harden_remove_users }}"
+  tags:
+    - linux_harden
+
+- name: remove unnecessary groups
+  group: >
+    name={{ item }}
+    state=absent
+  with_items: "{{ linux_harden_remove_groups }}"
+  tags: 
+    - linux_harden
+
+- name: set shells to nologin
+  user: >
+    name={{ item }}
+    shell=/usr/sbin/nologin
+  with_items: "{{ linux_harden_nologin_users }}"
+  tags: 
+    - linux_harden
+  
+- name: secure root home directory
+  file: >
+    dest=/root
+    state=directory
+    mode=700
+  tags: 
+    - linux_harden
