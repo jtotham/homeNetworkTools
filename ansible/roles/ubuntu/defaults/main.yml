@@ -1,3 +1,3 @@
 ---
 ubuntu_upgrade_packages: true
-manage_wirehive_authorized_keys: true
+manage_wirehive_authorized_keys: false

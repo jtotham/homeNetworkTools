@@ -4,17 +4,6 @@
     that:
       - dns_nameservers|length >= 2
 
-- name: extend root partition
-  script: fill_disk.sh 
-  register: fill_disk_result
-  changed_when: "fill_disk_result.rc != 100"
-  failed_when: "fill_disk_result.rc != 100 and fill_disk_result.rc != 0"
-  tags:
-    - ubuntu
-    - ubuntu_filesystem
-
-- include: regen_lvm_uuids.yml
-
 - include: network.yml
 
 - name: update apt and upgrade packages
@@ -44,24 +33,7 @@
   tags:
     - always
 
-- name: ensure /opt/wirehive folder exists
-  file: >
-    path=/opt/wirehive
-    state=directory
-  tags: 
-    - ubuntu
-
 - include: users.yml
-
-- name: set ownership of /opt/wirehive
-  file: >
-    path=/opt/wirehive
-    state=directory
-    owner=wirehive
-    group=root
-    mode=0770
-  tags: 
-    - ubuntu
 
 - include: vmware_tools.yml
   when: ansible_virtualization_type == "VMware"
@@ -153,7 +125,7 @@
   lineinfile: >
     dest=/etc/sudoers.d/nopassword
     regexp=^wirehive 
-    line='wirehive ALL=(ALL) NOPASSWD: ALL' 
+    line='jon ALL=(ALL) NOPASSWD: ALL' 
     create=yes 
     mode=0440 
     owner=root 
@@ -161,27 +133,6 @@
   tags:
     - ubuntu
     - ubuntu_sudo
-
-- name: oom protection script
-  copy: >
-    src=oomProtection.sh
-    dest=/opt/wirehive/oomProtection.sh
-    owner=wirehive
-    group=wirehive
-    mode=755
-  tags:
-    - ubuntu
-  
-- name: oom protection cronjob
-  cron: >
-    name="oom protection"
-    state=present
-    cron_file="oomProtect"
-    user=root
-    job="/opt/wirehive/oomProtection.sh"
-    minute="*/1"
-  tags:
-    - ubuntu
 
 - name: set console resolution
   lineinfile: >

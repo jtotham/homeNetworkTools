@@ -1,68 +1,24 @@
 ---
-- name: update wirehive user
-  user: >
-    name=wirehive
-    password={{ wirehive_password }}
-    groups=sudo
-    shell=/bin/bash
-    update_password=always
-  tags:
-    - ubuntu
-    - ubuntu_users
-
-- name: checking wirehive .ssh folder exists and is set correct
+- name: checking jon .ssh folder exists and is set correct
   file: >
-    dest=/home/wirehive/.ssh
+    dest=/home/jon/.ssh
     state=directory
-    owner=wirehive
-    group=wirehive
+    owner=jon
+    group=jon
     mode=700
   tags:
     - ubuntu
     - ubuntu_users
 
-- name: set wirehive user SSH authorized_keys
+- name: set jon user SSH authorized_keys
   copy: >
-    src=../../../common/publickeys/wirehiveuser-authorized_keys
-    dest=/home/wirehive/.ssh/authorized_keys
-    owner=wirehive
-    group=wirehive 
+    src=../../../common/publickeys/authorized_keys
+    dest=/home/jon/.ssh/authorized_keys
+    owner=jon
+    group=jon
     mode=0600
-  when: manage_wirehive_authorized_keys == true
+  when: manage_authorized_keys == true
   tags:
     - ubuntu
     - ubuntu_users
 
-- name: update monitoring user
-  user: >
-    name=monitoring
-    password={{ monitoring_password }}
-    shell=/bin/bash
-    update_password=always
-    home=/opt/wirehive/monitoringhome
-    move_home=yes
-  tags:
-    - ubuntu
-    - ubuntu_users
-
-- name: checking monitoring .ssh folder exists and is set correct
-  file: >
-    dest=/opt/wirehive/monitoringhome/.ssh
-    state=directory
-    owner=monitoring
-    group=monitoring
-    mode=700
-  tags:
-    - ubuntu
-    - ubuntu_users
-
-- name: set monitoring user SSH authorized_keys
-  copy: >
-    src=../../../common/publickeys/monitoringuser-authorized_keys
-    dest=/opt/wirehive/monitoringhome/.ssh/authorized_keys
-    owner=monitoring
-    group=monitoring
-    mode=0600
-  tags:
-    - ubuntu
-    - ubuntu_users
