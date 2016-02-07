@@ -6,15 +6,15 @@ describe 'sudo should be passwordless' do
   end
 end
 
-describe 'check wirehive ssh configuration' do
-  describe command('/usr/bin/test $(grep -c ssh-rsa /home/wirehive/.ssh/authorized_keys) -gt 10') do
+describe 'check ssh configuration' do
+  describe command('/usr/bin/test $(grep -c ssh-rsa /home/jon/.ssh/authorized_keys) -gt 10') do
     its(:exit_status) { should eq 0 }
   end
 
-  describe file('/home/wirehive/.ssh') do
+  describe file('/home/jon/.ssh') do
     it { should be_directory }
-    it { should be_owned_by 'wirehive' }
-    it { should be_grouped_into 'wirehive' }
+    it { should be_owned_by 'jon' }
+    it { should be_grouped_into 'jon' }
     it { should be_mode 700 }
   end
 
@@ -63,13 +63,6 @@ describe 'glances' do
   end
 end
 
-describe file('/opt/wirehive') do
-  it { should be_directory }
-  it { should be_owned_by 'wirehive' }
-  it { should be_grouped_into 'root' }
-  it { should be_mode 770 }
-end
-
 describe interface('eth0') do
   it { should exist }
   it { should be_up }
@@ -81,8 +74,8 @@ end
 
 describe 'check hostname set up correctly' do
   describe file('/etc/hosts') do
-    its(:content) { should match '^127\.0\.\d\.\d\s+.*servers.wirehive.net' }
-    its(:content) { should match '^(?!(^127\.0\.0\.1)|(^192\.168)|(^10\.)|(^172\.1[6-9])|(^172\.2[0-9])|(^172\.3[0-1]))\s+.+servers.wirehive.net' }
+    its(:content) { should match '^127\.0\.\d\.\d\s+.*jonsbox.net' }
+    its(:content) { should match '^(?!(^127\.0\.0\.1)|(^192\.168)|(^10\.)|(^172\.1[6-9])|(^172\.2[0-9])|(^172\.3[0-1]))\s+.+jonsbox.net' }
   end
 
   describe file('/etc/hostname') do
@@ -122,25 +115,17 @@ describe 'snmpd' do
   end
 end
 
-describe user('wirehive') do
+describe user('jon') do
   it { should exist }
-  it { should belong_to_group 'wirehive' }
-  it { should have_home_directory '/home/wirehive' }
-  it { should have_login_shell '/bin/bash' }
+  it { should belong_to_group 'jon' }
+  it { should have_home_directory '/home/jon' }
+  it { should have_login_shell '/bin/zsh' }
 end
 
-describe 'wirehive password should be encrypted' do
+describe 'jons password should be encrypted' do
   describe file('/etc/shadow') do
-    its(:content) { should match '^wirehive:\$6\$' }
+    its(:content) { should match '^jon:\$6\$' }
   end
-end
-
-describe physical_disk('/dev/sda') do
-  its(:free_space) { should be < 1073741824 }
-end
-
-describe user('monitoring') do
-  it { should exist }
 end
 
 describe file("/etc/timezone") do
@@ -163,12 +148,3 @@ describe port(25) do
   it { should be_listening.with('tcp') }
 end
 
-describe "LVM UUIDs should be generated" do
-  describe command("sudo -n pvdisplay") do
-    its(:stdout) { should_not match "XwCY8l-L1Wa-Ys4Z-0Kjs-CatI-Y22J-27gL4I"}
-  end
-  
-  describe command("sudo -n vgdisplay") do
-    its(:stdout) { should_not match "MLwTsI-MV1N-k5bQ-DDTw-xvbT-fSsk-6BfVJw"}
-  end
-end
