@@ -1,0 +1,9 @@
+---
+- hosts: aws-servers
+  roles:
+     - common
+       linux_harden
+       newrelic
+       ntp
+       vmwaretools
+

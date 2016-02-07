@@ -12,7 +12,7 @@
 
 - name: set jon user SSH authorized_keys
   copy: >
-    src=../../../common/publickeys/authorized_keys
+    src=../../common/publickeys/authorized_keys
     dest=/home/jon/.ssh/authorized_keys
     owner=jon
     group=jon

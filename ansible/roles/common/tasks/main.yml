@@ -1,0 +1,142 @@
+---
+- name: validation
+  assert:
+    that:
+      - dns_nameservers|length >= 2
+
+- name: update apt and upgrade packages
+  apt: >-
+    upgrade=yes
+    update_cache=yes
+    cache_valid_time=3600
+  when: "{{ ubuntu_upgrade_packages }}"
+  tags:
+    - ubuntu
+
+- name: update packages
+  apt: >-
+    update_cache=yes
+    cache_valid_time=3600
+  when: "not {{ ubuntu_upgrade_packages }}"
+  tags:
+    - ubuntu
+
+- name: install common packages
+  apt: >
+    name={{ item }}
+    state=latest
+  with_items: "{{ ubuntu_common_packages }}"
+  notify:
+    - restart fail2ban
+  tags:
+    - always
+
+- include: users.yml
+
+- include: glances.yml
+  when: ansible_distribution_version|version_compare('14.04', '>=')
+
+- include: atop.yml
+
+- name: set server hostname as defined in inventory file
+  hostname: name={{ server_hostname }}
+  when: server_hostname is defined and server_hostname
+  register: hostname_change
+  tags:
+    - ubuntu
+    - ubuntu_hostname
+
+- name: add hostname to 127.0.0.1 in hosts file
+  lineinfile: >
+    dest=/etc/hosts
+    state=present
+    backup=yes
+    regexp="^127.0.1.1"
+    line="127.0.1.1 {{ server_hostname }}"
+  when: hostname_change.success and server_hostname is defined
+  tags: 
+    - ubuntu
+    - ubuntu_hostname
+
+- name: set FSCK to fix errors on boot
+  lineinfile: >
+    dest=/etc/default/rcS
+    regexp="^FSCKFIX"
+    line="FSCKFIX=yes"
+    state=present
+  tags:
+    - ubuntu
+
+- name: configure snmpd
+  template: src=snmpd.j2 dest=/etc/snmp/snmpd.conf
+  when: snmp_community is defined and snmp_community
+  notify:
+    - restart snmpd
+  tags:
+    - ubuntu
+    - ubuntu_snmp
+
+- name: start and enable snmpd
+  service: >-
+    name=snmpd
+    state=started
+    enabled=yes
+  tags:
+    - ubuntu
+    - ubuntu_snmp
+
+- name: disable root login via password
+  lineinfile: >
+    dest=/etc/ssh/sshd_config
+    regexp="^PermitRootLogin"
+    line="PermitRootLogin no"
+  notify:
+    - reload ssh
+  tags:
+    - ubuntu
+
+- name: disable whoopsie error reporting deamon
+  ini_file: >
+    dest=/etc/default/whoopsie
+    section=General
+    option=report_crashes
+    value=false
+  when: ansible_distribution_release == "precise"
+  notify:
+    - stop whoopsie
+  tags:
+    - ubuntu
+
+- name: ensure old method of sudoing without password is not present
+  lineinfile: >
+    dest=/etc/sudoers
+    regexp=^Defaults.*authenticate 
+    state=absent
+  tags:
+    - ubuntu
+    - ubuntu_sudo
+
+- name: set sudo without password on wirehive user
+  lineinfile: >
+    dest=/etc/sudoers.d/nopassword
+    regexp=^wirehive 
+    line='jon ALL=(ALL) NOPASSWD: ALL' 
+    create=yes 
+    mode=0440 
+    owner=root 
+    group=root
+  tags:
+    - ubuntu
+    - ubuntu_sudo
+
+- name: set console resolution
+  lineinfile: >
+    dest=/etc/default/grub
+    regexp=.*GRUB_GFXMODE= 
+    line="GRUB_GFXMODE=1024x768" 
+    state=present
+  notify: rebuild grub
+  tags:
+    - ubuntu
+    - ubuntu_grub
+

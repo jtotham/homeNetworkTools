@@ -1,0 +1,9 @@
+---
+- hosts: wirehive-servers
+  roles:
+     - common
+       linux_harden
+       newrelic
+       ntp
+       vmwaretools
+

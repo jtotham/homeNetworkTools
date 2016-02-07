@@ -1,4 +1,9 @@
 ---
-- hosts: servers
+- hosts: home-servers
   roles:
      - common
+       #       linux_harden
+       #       newrelic
+       #       ntp
+       #       vmwaretools
+
