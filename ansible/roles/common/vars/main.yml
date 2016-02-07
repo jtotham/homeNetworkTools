@@ -18,3 +18,11 @@ ubuntu_common_packages:
   - vim
   - whois
   - zsh
+  - unzip
+  - git
+
+pip_packages:
+  - pyyaml
+  - pycrypto
+  - thefuck
+

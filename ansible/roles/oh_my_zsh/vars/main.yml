@@ -1,0 +1,7 @@
+---
+# vars file for ansible-oh-my-zsh
+oh_my_zsh_user:
+  - jon
+
+oh_my_zsh_home: 
+  - /home/jon

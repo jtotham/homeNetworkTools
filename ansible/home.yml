@@ -2,6 +2,10 @@
 - hosts: home-servers
   become: yes
   become_method: sudo
+
+  vars_files:
+    - private.yml
+
   roles:
      - common
      - linux_harden
@@ -9,7 +13,10 @@
      - ntp
      - vmwaretools
 
-- vars_files:
-    - private.yml
+- hosts: home-servers
+  become: no
+  become_method: sudo
 
+  roles:
+     - oh_my_zsh
 

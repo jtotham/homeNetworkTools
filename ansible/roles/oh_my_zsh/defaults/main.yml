@@ -1,0 +1,5 @@
+---
+# defaults file for ansible-oh-my-zsh
+
+oh_my_zsh_user: jon
+oh_my_zsh_user_home: /home/jon

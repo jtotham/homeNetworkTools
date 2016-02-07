@@ -1,0 +1,25 @@
+---
+# tasks file for install
+
+- name: "Install oh-my-zsh"
+  git:
+    repo: https://github.com/robbyrussell/oh-my-zsh
+    dest: "/home/jon/.oh-my-zsh"
+  tags:
+    - install
+
+- name: "deploy .zshrc config"
+  template:
+    src: ../../../common/conf/zshrc.in
+    dest: "/home/jon/.zshrc"
+  tags:
+    - configure
+
+- name: "Switch to shell to zsh"
+  user:
+    name: jon
+    shell: /usr/bin/zsh
+  become: yes
+  tags:
+    - configure
+

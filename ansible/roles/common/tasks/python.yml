@@ -1,0 +1,27 @@
+---
+- name: install pip on debian
+  apt:
+    name: python-pip,python-dev
+    state: present
+  when: ansible_os_family == 'Debian'
+  become: yes
+  become_method: sudo
+  become_user: root 
+
+- name: install pip on redhat
+  yum:
+    name: python-pip
+    state: present
+  when: ansible_os_family == 'RedHat'
+  become: yes
+  become_method: sudo
+  become_user: root
+
+- name: instal pip modules
+  pip: >
+    name={{ item }}
+  with_items: "{{ pip_packages }}"
+  become: yes
+  become_method: sudo
+  become_user: root
+

@@ -26,6 +26,8 @@
   tags:
     - always
 
+- include: python.yml
+
 - include: users.yml
 
 - include: glances.yml
