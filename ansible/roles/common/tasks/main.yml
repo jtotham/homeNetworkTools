@@ -64,9 +64,21 @@
   tags:
     - ubuntu
 
+- debug: var=snmp_prefix
+  tags:
+    - ubuntu_snmp
+
+- debug: var=snmp_contact
+  tags:
+    - ubuntu_snmp
+
+- debug: var=snmp_location
+  tags:
+    - ubuntu_snmp
+
+
 - name: configure snmpd
   template: src=snmpd.j2 dest=/etc/snmp/snmpd.conf
-  when: snmp_community is defined and snmp_community
   notify:
     - restart snmpd
   tags:

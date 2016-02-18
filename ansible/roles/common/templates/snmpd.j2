@@ -1,7 +1,7 @@
-rocommunity {{ snmp_community }}
+rocommunity "{{ snmp_prefix }}{{ inventory_hostname_short }}"
 
-syslocation  "Jonsbox.net"
-syscontact  "jtotham@me.com"
+syslocation  {{ snmp_location }}
+syscontact {{ snmp_contact }} 
 sysServices    72
 
 #  Disk Monitoring
